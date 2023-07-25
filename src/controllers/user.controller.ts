@@ -51,9 +51,24 @@ export const register = async (req: Request, res: Response) => {
       ...req.body,
       password: passwordHashed,
     };
-    return prisma.user
+    const foundUser = await prisma.user.findFirst({
+      where: { email: newUser.email },
+    });
+    if (foundUser)
+      return res.status(403).json({ error: "email already exits" });
+    return await prisma.user
       .create({ data: newUser })
-      .then((response) => res.status(200).json({ data: response }));
+      .then(async (result) => {
+        const tokenSession = await tokenSign(result);
+        return res.status(200).json({
+          data: {
+            id: result.id,
+            email: result.email,
+          },
+          token: tokenSession,
+        });
+      })
+      .catch(() => res.status(403).json({ error: "Invalid Credentials" }));
   } catch (error) {
     if (error instanceof Error)
       return res.status(400).json({ error: error.message });

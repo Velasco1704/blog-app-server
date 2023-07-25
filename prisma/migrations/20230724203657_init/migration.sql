@@ -12,7 +12,7 @@ CREATE TABLE `User` (
 CREATE TABLE `Post` (
     `id` VARCHAR(191) NOT NULL,
     `body` VARCHAR(191) NOT NULL,
-    `create_at` DATE NOT NULL,
+    `create_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `userId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
