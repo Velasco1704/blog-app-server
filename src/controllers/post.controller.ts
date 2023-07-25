@@ -4,7 +4,7 @@ import { prisma } from "../lib";
 export const getPosts = async (req: Request, res: Response) => {
   try {
     return await prisma.post
-      .findMany()
+      .findMany({ include: { user: true } })
       .then((response) => res.json({ result: response }));
   } catch (error) {
     if (error instanceof Error)
